@@ -1,2 +1,20 @@
 {
+  "hosting": {
+    "public": "public",
+    "site": "easyquran",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "database": {
+    "rules": "database.rules.file"
+  }
 }

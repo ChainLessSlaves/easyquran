@@ -1,6 +1,6 @@
 "use client";
 
-import { Ayah, TranslationKey } from "@/lib/types";
+import { Ayah } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bookmark, Copy, PlayCircle } from "lucide-react";
@@ -9,14 +9,16 @@ import { useToast } from "@/hooks/use-toast";
 interface VerseCardProps {
   surahId: number;
   verse: Ayah;
-  selectedTranslation: TranslationKey;
+  selectedTranslationKey: string;
+  allTranslations: { value: string; label: string; group: string }[];
 }
 
-export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProps) {
+export function VerseCard({ surahId, verse, selectedTranslationKey, allTranslations }: VerseCardProps) {
   const { toast } = useToast();
 
   const handleCopy = () => {
-    const textToCopy = `${verse.text.ar}\n\n${verse.text.en_sahih}\n\n${verse.text[selectedTranslation]}\n\n(Quran ${surahId}:${verse.id})`;
+    const selectedTranslationText = verse.text[selectedTranslationKey] || '';
+    const textToCopy = `${verse.text.ar}\n\n${verse.transliteration}\n\n${selectedTranslationText}\n\n(Quran ${surahId}:${verse.id})`;
     navigator.clipboard.writeText(textToCopy);
     toast({
       title: "Copied to clipboard!",
@@ -45,18 +47,13 @@ export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProp
     });
   };
 
-  const getTranslationAuthor = (key: TranslationKey) => {
-    switch (key) {
-      case "bn_muhiuddin":
-        return "Muhiuddin Khan";
-      case "bn_tanzil":
-        return "Tanzil";
-      case "en_sahih":
-        return "Sahih International";
-      default:
-        return "";
-    }
+  const getTranslationAuthor = (key: string) => {
+    const translation = allTranslations.find(t => t.value === key);
+    return translation ? translation.label : "";
   }
+  
+  const englishTranslation = verse.text['en_20'] || verse.text['en_131'];
+  const selectedTranslationText = verse.text[selectedTranslationKey];
 
   return (
     <Card className="overflow-hidden">
@@ -86,21 +83,25 @@ export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProp
                 </p>
             </div>
 
-            {verse.text.en_transliteration && (
+            {verse.transliteration && (
             <div>
-                <p className="text-lg text-foreground font-serif italic">{verse.text.en_transliteration}</p>
+                <p className="text-lg text-foreground font-serif italic">{verse.transliteration}</p>
             </div>
             )}
             
-            <div>
-            <p className="text-muted-foreground">{verse.text.en_sahih}</p>
-            <p className="text-xs text-muted-foreground/80 mt-1">- Sahih International</p>
-            </div>
-            
-            <div>
-            <p className="text-muted-foreground">{verse.text[selectedTranslation]}</p>
-            <p className="text-xs text-muted-foreground/80 mt-1">- {getTranslationAuthor(selectedTranslation)}</p>
-            </div>
+            {englishTranslation && (
+              <div>
+                <p className="text-muted-foreground">{englishTranslation}</p>
+                <p className="text-xs text-muted-foreground/80 mt-1">- {getTranslationAuthor(verse.text['en_20'] ? 'en_20' : 'en_131')}</p>
+              </div>
+            )}
+
+            {selectedTranslationText && selectedTranslationKey.startsWith('bn_') && (
+              <div>
+                <p className="text-muted-foreground">{selectedTranslationText}</p>
+                <p className="text-xs text-muted-foreground/80 mt-1">- {getTranslationAuthor(selectedTranslationKey)}</p>
+              </div>
+            )}
         </div>
       </CardContent>
     </Card>

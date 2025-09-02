@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
-import type { Surah, TranslationKey } from '@/lib/types';
+import React, { useState, useMemo, useTransition } from 'react';
+import type { Surah, SurahMetadata } from '@/lib/types';
+import { getSurah } from '@/app/actions';
 import {
   SidebarProvider,
   Sidebar,
@@ -24,23 +25,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BookOpen, Languages, Menu } from 'lucide-react';
+import { BookOpen, Languages, Menu, Loader2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { VerseCard } from '@/components/verse-card';
 import { SearchTool } from '@/components/search-tool';
 
 interface QuranClientLayoutProps {
-  surahs: Surah[];
+  surahMetadatas: SurahMetadata[];
+  initialSurah: Surah;
 }
 
-export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
-  const [currentSurah, setCurrentSurah] = useState<Surah>(surahs[0]);
-  const [selectedTranslation, setSelectedTranslation] = useState<TranslationKey>('bn_muhiuddin');
+type TranslationOption = { value: string; label: string; group: string };
+
+export default function QuranClientLayout({ surahMetadatas, initialSurah }: QuranClientLayoutProps) {
+  const [currentSurah, setCurrentSurah] = useState<Surah>(initialSurah);
+  const [selectedTranslation, setSelectedTranslation] = useState<string>('bn_162'); // Default to Dr. Abu Bakr
+  const [isPending, startTransition] = useTransition();
+
+  const handleSurahChange = (surahId: number) => {
+    startTransition(async () => {
+      const newSurahData = await getSurah(surahId);
+      if (newSurahData) {
+        setCurrentSurah(newSurahData);
+      }
+    });
+  };
   
-  const translationOptions: { value: TranslationKey; label: string }[] = [
-    { value: 'bn_muhiuddin', label: 'Bangla (Muhiuddin Khan)' },
-    { value: 'bn_tanzil', label: 'Bangla (Tanzil)' },
-    { value: 'en_sahih', label: 'English (Sahih International)' },
+  const translationOptions: TranslationOption[] = [
+      { value: 'en_131', label: 'The Clear Quran', group: 'English' },
+      { value: 'en_20', label: 'Saheeh International', group: 'English' },
+      { value: 'bn_161', label: 'Taisirul Quran', group: 'Bengali' },
+      { value: 'bn_162', label: 'Dr. Abu Bakr Zakaria', group: 'Bengali' },
+      { value: 'bn_163', label: 'Sheikh Mujibur Rahman', group: 'Bengali' },
+      { value: 'bn_164', label: 'Rawai Al-bayan', group: 'Bengali' },
   ];
 
   return (
@@ -52,7 +69,7 @@ export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
             <h1 className="text-xl font-headline font-semibold">কুরআন বাংলা</h1>
           </div>
         </SidebarHeader>
-        <SidebarContent asChild>
+        <SidebarContent>
           <ScrollArea className="flex-1">
             <SidebarGroup>
               <SearchTool />
@@ -60,14 +77,14 @@ export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
             <SidebarGroup>
               <SidebarGroupLabel>Surahs</SidebarGroupLabel>
               <SidebarMenu>
-                {surahs.map((surah) => {
-                  if (!surah || !surah.name) {
+                {surahMetadatas.map((surah) => {
+                  if (!surah || !surah.name_simple) {
                     return null;
                   }
                   return (
                     <SidebarMenuItem key={surah.id}>
                       <SidebarMenuButton
-                        onClick={() => setCurrentSurah(surah)}
+                        onClick={() => handleSurahChange(surah.id)}
                         isActive={currentSurah.id === surah.id}
                         className="justify-between"
                       >
@@ -76,11 +93,11 @@ export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
                             {surah.id}
                           </span>
                           <div>
-                            <p className="font-semibold">{surah.name.transliteration}</p>
-                            <p className="text-xs text-muted-foreground">{surah.name.en}</p>
+                            <p className="font-semibold">{surah.name_simple}</p>
+                            <p className="text-xs text-muted-foreground">{surah.name_translation}</p>
                           </div>
                         </div>
-                        <p className="text-lg font-headline text-primary">{surah.name.ar.split(' ').pop()}</p>
+                        <p className="text-lg font-headline text-primary">{surah.name_arabic.split(' ').pop()}</p>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   )
@@ -97,19 +114,30 @@ export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
               {currentSurah && currentSurah.name && (
                 <div className="flex-1">
                   <h2 className="text-xl font-headline font-bold">{currentSurah.name.transliteration}</h2>
-                  <p className="text-sm text-muted-foreground">{currentSurah.name.bn}</p>
+                  <p className="text-sm text-muted-foreground">{currentSurah.name.en}</p>
                 </div>
               )}
 
               <div className="flex items-center gap-2">
-                <Select onValueChange={(value: TranslationKey) => setSelectedTranslation(value)} defaultValue={selectedTranslation}>
+                <Select onValueChange={(value: string) => setSelectedTranslation(value)} defaultValue={selectedTranslation}>
                   <SelectTrigger className="w-auto gap-2 hidden sm:flex">
                     <Languages className="w-4 h-4" />
                     <SelectValue placeholder="Select Translation" />
                   </SelectTrigger>
                   <SelectContent>
-                    {translationOptions.map(opt => (
-                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    {Object.values(translationOptions.reduce((acc, option) => {
+                      if (!acc[option.group]) {
+                        acc[option.group] = [];
+                      }
+                      acc[option.group].push(option);
+                      return acc;
+                    }, {} as {[key: string]: TranslationOption[]})).map((group, index) => (
+                      <React.Fragment key={index}>
+                        <SelectValue>{group[0].group}</SelectValue>
+                        {group.map(opt => (
+                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                        ))}
+                      </React.Fragment>
                     ))}
                   </SelectContent>
                 </Select>
@@ -117,37 +145,56 @@ export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
               </div>
           </header>
           
-          {currentSurah && currentSurah.name && (
-            <div className="p-2 sm:p-4 md:p-6 flex-1">
-              <div className="sm:hidden mb-4">
-                  <Select onValueChange={(value: TranslationKey) => setSelectedTranslation(value)} defaultValue={selectedTranslation}>
-                      <SelectTrigger className="w-full gap-2">
-                        <Languages className="w-4 h-4" />
-                        <SelectValue placeholder="Select Translation" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {translationOptions.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-              </div>
+          <div className="p-2 sm:p-4 md:p-6 flex-1">
+             {isPending ? (
+                <div className="flex justify-center items-center h-full">
+                  <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                </div>
+              ) : currentSurah && currentSurah.name ? (
+              <>
+                <div className="sm:hidden mb-4">
+                    <Select onValueChange={(value: string) => setSelectedTranslation(value)} defaultValue={selectedTranslation}>
+                        <SelectTrigger className="w-full gap-2">
+                          <Languages className="w-4 h-4" />
+                          <SelectValue placeholder="Select Translation" />
+                        </SelectTrigger>
+                        <SelectContent>
+                           {Object.values(translationOptions.reduce((acc, option) => {
+                            if (!acc[option.group]) {
+                              acc[option.group] = [];
+                            }
+                            acc[option.group].push(option);
+                            return acc;
+                          }, {} as {[key: string]: TranslationOption[]})).map((group, index) => (
+                            <React.Fragment key={index}>
+                              <SelectValue>{group[0].group}</SelectValue>
+                              {group.map(opt => (
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                              ))}
+                            </React.Fragment>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                </div>
 
-              <Card className="mb-4 bg-primary/5 border-primary/20">
-                  <CardContent className="p-6 text-center">
-                      <h3 className="text-3xl font-headline text-primary">{currentSurah.name.ar}</h3>
-                      <p className="text-muted-foreground mt-1">{currentSurah.name.transliteration}</p>
-                      <p className="text-sm text-muted-foreground">{currentSurah.total_verses} Verses</p>
-                  </CardContent>
-              </Card>
+                <Card className="mb-4 bg-primary/5 border-primary/20">
+                    <CardContent className="p-6 text-center">
+                        <h3 className="text-3xl font-headline text-primary">{currentSurah.name.ar}</h3>
+                        <p className="text-muted-foreground mt-1">{currentSurah.name.transliteration}</p>
+                        <p className="text-sm text-muted-foreground">{currentSurah.total_verses} Verses</p>
+                    </CardContent>
+                </Card>
 
-              <div className="space-y-4">
-                {currentSurah.verses && currentSurah.verses.map((verse) => (
-                  <VerseCard key={verse.id} verse={verse} surahId={currentSurah.id} selectedTranslation={selectedTranslation} />
-                ))}
-              </div>
-            </div>
-          )}
+                <div className="space-y-4">
+                  {currentSurah.verses && currentSurah.verses.map((verse) => (
+                    <VerseCard key={verse.id} verse={verse} surahId={currentSurah.id} selectedTranslationKey={selectedTranslation} allTranslations={translationOptions} />
+                  ))}
+                </div>
+              </>
+            ) : (
+               <div>Surah data could not be loaded.</div>
+            )}
+          </div>
         </main>
       </SidebarInset>
     </SidebarProvider>
