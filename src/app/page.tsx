@@ -1,3 +1,7 @@
+import QuranClientLayout from '@/components/quran-client-layout';
+import { quranData } from '@/lib/quran-data';
+
 export default function Home() {
-  return <></>;
+  const surahs = quranData;
+  return <QuranClientLayout surahs={surahs} />;
 }
