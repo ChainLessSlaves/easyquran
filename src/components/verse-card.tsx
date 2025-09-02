@@ -1,18 +1,20 @@
 
 "use client";
 
-import React from 'react';
-import { Ayah } from "@/lib/types";
+import React, { useState, useEffect } from 'react';
+import { Ayah, TajweedAyah } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bookmark, Copy, PlayCircle } from "lucide-react";
+import { Bookmark, Copy, PlayCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getTajweedVerse } from '@/app/actions';
 
 interface VerseCardProps {
   surahId: number;
   verse: Ayah;
   selectedTranslationKey: string;
   allTranslations: { value: string; label: string; group: string }[];
+  showTajweed: boolean;
 }
 
 // Helper function to parse and render text with styled superscripts
@@ -44,8 +46,23 @@ const renderTextWithFootnotes = (text: string) => {
 };
 
 
-export function VerseCard({ surahId, verse, selectedTranslationKey, allTranslations }: VerseCardProps) {
+export function VerseCard({ surahId, verse, selectedTranslationKey, allTranslations, showTajweed }: VerseCardProps) {
   const { toast } = useToast();
+  const [tajweedData, setTajweedData] = useState<TajweedAyah | null>(null);
+  const [isLoadingTajweed, setIsLoadingTajweed] = useState(false);
+
+  useEffect(() => {
+    if (showTajweed && !tajweedData) {
+      setIsLoadingTajweed(true);
+      getTajweedVerse(surahId, verse.id)
+        .then(data => {
+          setTajweedData(data);
+        })
+        .catch(console.error)
+        .finally(() => setIsLoadingTajweed(false));
+    }
+  }, [showTajweed, surahId, verse.id, tajweedData]);
+
 
   const handleCopy = () => {
     const selectedTranslationText = verse.text[selectedTranslationKey] || '';
@@ -108,13 +125,23 @@ export function VerseCard({ surahId, verse, selectedTranslationKey, allTranslati
         </div>
         
         <div className="space-y-6">
-            {verse.text.ar && (
-              <div className="text-right">
-                  <p className="text-3xl md:text-4xl leading-relaxed font-headline text-primary" dir="rtl">
-                  {verse.text.ar}
-                  </p>
-              </div>
-            )}
+            <div className="text-right">
+                {isLoadingTajweed ? (
+                    <div className="flex justify-center items-center p-4">
+                        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    </div>
+                ) : showTajweed && tajweedData ? (
+                    <div
+                      className="text-3xl md:text-4xl leading-relaxed font-headline text-primary"
+                      dir="rtl"
+                      dangerouslySetInnerHTML={{ __html: tajweedData.text_uthmani_tajweed }}
+                    />
+                ) : (
+                   <p className="text-3xl md:text-4xl leading-relaxed font-headline text-primary" dir="rtl">
+                     {verse.text.ar}
+                   </p>
+                )}
+            </div>
 
             {verse.transliteration && (
               <div>

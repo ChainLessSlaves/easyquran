@@ -1,7 +1,7 @@
 "use server";
 
 import { keywordSearch, type KeywordSearchOutput } from "@/ai/flows/keyword-search-tool";
-import type { Surah, Ayah, SurahData } from '@/lib/types';
+import type { Surah, Ayah, SurahData, TajweedAyah } from '@/lib/types';
 
 
 export async function handleSearch(query: string): Promise<KeywordSearchOutput | { error: string }> {
@@ -34,7 +34,7 @@ async function getFullSurahData(surahId: number): Promise<SurahData | null> {
 // Helper to transform SurahData into the simplified Surah type for the client
 function transformSurahData(surahData: SurahData): Surah {
   const verses: Ayah[] = Object.entries(surahData.verses || {}).map(([vNumber, vData]) => {
-    if (!vData) return null; // Add null check here
+    if (!vData) return null;
 
     const ayah: Ayah = {
       id: parseInt(vNumber),
@@ -69,7 +69,7 @@ function transformSurahData(surahData: SurahData): Surah {
     name: {
       ar: surahData.metadata.name_arabic,
       en: surahData.metadata.name_translation,
-      bn: surahData.metadata.name_translation, // You might need a Bengali translation for the name
+      bn: surahData.metadata.name_translation,
       transliteration: surahData.metadata.name_simple,
     },
     total_verses: surahData.metadata.total_verses,
@@ -81,4 +81,29 @@ export async function getSurah(id: number) {
   const surahData = await getFullSurahData(id);
   if (!surahData) return null;
   return transformSurahData(surahData);
+}
+
+
+export async function getTajweedVerse(surahId: number, verseId: number): Promise<TajweedAyah | null> {
+  try {
+    const res = await fetch(`https://api.qurancdn.com/api/qdc/verses/by_key/${surahId}:${verseId}?fields=text_uthmani&words=true&word_fields=text_uthmani,qpc_uthmani`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch tajweed verse for ${surahId}:${verseId}`);
+    }
+    const data = await res.json();
+    const verse = data.verse;
+    
+    const tajweedHtml = verse.words.map((word: any) => 
+        `<span class="tajweed-word" style="color: ${word.text_uthmani_tajweed || 'inherit'}">${word.qpc_uthmani}</span>`
+    ).join(' ');
+
+    return {
+      id: verse.id,
+      verse_key: verse.verse_key,
+      text_uthmani_tajweed: tajweedHtml,
+    };
+  } catch (error) {
+    console.error(`Error fetching Tajweed verse ${surahId}:${verseId}:`, error);
+    return null;
+  }
 }

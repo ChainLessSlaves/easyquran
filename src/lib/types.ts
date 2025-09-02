@@ -67,3 +67,9 @@ export type Surah = {
   total_verses: number;
   verses: Ayah[];
 };
+
+export type TajweedAyah = {
+  id: number;
+  verse_key: string;
+  text_uthmani_tajweed: string;
+}

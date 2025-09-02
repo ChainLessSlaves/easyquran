@@ -25,10 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BookOpen, Languages, Menu, Loader2 } from 'lucide-react';
+import { BookOpen, Languages, Menu, Loader2, ChevronDown } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { VerseCard } from '@/components/verse-card';
 import { SearchTool } from '@/components/search-tool';
+import { Button } from './ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 interface QuranClientLayoutProps {
   surahMetadatas: SurahMetadata[];
@@ -37,10 +39,23 @@ interface QuranClientLayoutProps {
 
 type TranslationOption = { value: string; label: string; group: string };
 
+const tajweedRules = [
+    { name: "Silent letter", color: "text-gray-400" },
+    { name: "Normal madd (2)", color: "text-yellow-500" },
+    { name: "Separated madd (2/4/6)", color: "text-orange-500" },
+    { name: "Connected madd (4/5)", color: "text-red-500" },
+    { name: "Necessary madd (6)", color: "text-red-600" },
+    { name: "Ghunna/ikhfa'", color: "text-green-500" },
+    { name: "Qalqala (echo)", color: "text-blue-400" },
+    { name: "Tafkhim (heavy)", color: "text-blue-600" }
+];
+
 export default function QuranClientLayout({ surahMetadatas, initialSurah }: QuranClientLayoutProps) {
   const [currentSurah, setCurrentSurah] = useState<Surah>(initialSurah);
-  const [selectedTranslation, setSelectedTranslation] = useState<string>('bn_162'); // Default to Dr. Abu Bakr
+  const [selectedTranslation, setSelectedTranslation] = useState<string>('bn_164'); // Rawai Al-bayan
   const [isPending, startTransition] = useTransition();
+  const [showTajweed, setShowTajweed] = useState(false);
+  const [isTajweedLegendOpen, setIsTajweedLegendOpen] = useState(false);
 
   const handleSurahChange = (surahId: number) => {
     startTransition(async () => {
@@ -66,7 +81,7 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-headline font-semibold">কুরআন বাংলা</h1>
+            <h1 className="text-xl font-headline font-semibold">EasyQuran</h1>
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -78,7 +93,7 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
               <SidebarGroupLabel>Surahs</SidebarGroupLabel>
               <SidebarMenu>
                 {surahMetadatas.map((surah) => {
-                  if (!surah || !surah.name_simple) {
+                  if (!surah || !surah.name) {
                     return null;
                   }
                   return (
@@ -93,8 +108,8 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
                             {surah.id}
                           </span>
                           <div>
-                            <p className="font-semibold">{surah.name_simple}</p>
-                            <p className="text-xs text-muted-foreground">{surah.name_translation}</p>
+                            <p className="font-semibold">{surah.name.transliteration}</p>
+                            <p className="text-xs text-muted-foreground">{surah.name.en}</p>
                           </div>
                         </div>
                         <p className="text-lg font-headline text-primary">{surah.name_arabic.split(' ').pop()}</p>
@@ -119,6 +134,17 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
               )}
 
               <div className="flex items-center gap-2">
+                 <Collapsible open={isTajweedLegendOpen} onOpenChange={setIsTajweedLegendOpen}>
+                    <CollapsibleTrigger asChild>
+                       <Button variant={showTajweed ? "default" : "outline"} onClick={() => setShowTajweed(!showTajweed)}>
+                        Tajweed
+                        <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isTajweedLegendOpen && 'rotate-180'}`} />
+                       </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                       {/* The legend can be a dropdown or a popover under the button */}
+                    </CollapsibleContent>
+                  </Collapsible>
                 <Select onValueChange={(value: string) => setSelectedTranslation(value)} defaultValue={selectedTranslation}>
                   <SelectTrigger className="w-auto gap-2 hidden sm:flex">
                     <Languages className="w-4 h-4" />
@@ -177,6 +203,22 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
                       </Select>
                 </div>
 
+                {showTajweed && (
+                  <Card className="mb-4">
+                    <CardContent className="p-4">
+                      <p className="text-sm font-bold mb-2">Tajweed Colors</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {tajweedRules.map(rule => (
+                          <div key={rule.name} className="flex items-center gap-2">
+                            <span className={`w-3 h-3 rounded-full ${rule.color.replace('text-', 'bg-')}`}></span>
+                            <span className="text-xs">{rule.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
                 <Card className="mb-4 bg-primary/5 border-primary/20">
                     <CardContent className="p-6 text-center">
                         <h3 className="text-3xl font-headline text-primary">{currentSurah.name.ar}</h3>
@@ -187,7 +229,14 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
 
                 <div className="space-y-4">
                   {currentSurah.verses && currentSurah.verses.map((verse) => (
-                    <VerseCard key={verse.id} verse={verse} surahId={currentSurah.id} selectedTranslationKey={selectedTranslation} allTranslations={translationOptions} />
+                    <VerseCard 
+                        key={verse.id} 
+                        verse={verse} 
+                        surahId={currentSurah.id} 
+                        selectedTranslationKey={selectedTranslation} 
+                        allTranslations={translationOptions}
+                        showTajweed={showTajweed}
+                    />
                   ))}
                 </div>
               </>

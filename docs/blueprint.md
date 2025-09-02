@@ -1,4 +1,4 @@
-# **App Name**:  কুরআন বাংলা (Quran Bangla)
+# **App Name**:  EasyQuran
 
 ## Core Features:
 
