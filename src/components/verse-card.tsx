@@ -25,8 +25,16 @@ export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProp
   };
 
   const handlePlayAudio = () => {
-    const audio = new Audio(verse.audio);
-    audio.play();
+    if (verse.audio) {
+      const audio = new Audio(verse.audio);
+      audio.play();
+    } else {
+       toast({
+        title: "Audio not available",
+        description: "Audio for this verse is not available.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleBookmark = () => {
@@ -52,45 +60,47 @@ export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProp
 
   return (
     <Card className="overflow-hidden">
-      <CardContent className="p-4">
-        <div className="flex gap-4">
-          <div className="w-16 flex flex-col items-center gap-2 text-sm text-muted-foreground">
+      <CardContent className="p-4 space-y-4">
+        <div className="flex justify-between items-start">
             <span className="font-bold text-primary">{surahId}:{verse.id}</span>
-            <div className="flex flex-col">
-              <Button variant="ghost" size="icon" className="w-8 h-8" onClick={handleCopy}>
-                <Copy className="w-4 h-4" />
-                <span className="sr-only">Copy</span>
-              </Button>
-              <Button variant="ghost" size="icon" className="w-8 h-8" onClick={handleBookmark}>
-                <Bookmark className="w-4 h-4" />
-                <span className="sr-only">Bookmark</span>
-              </Button>
-              <Button variant="ghost" size="icon" className="w-8 h-8" onClick={handlePlayAudio}>
-                <PlayCircle className="w-4 h-4" />
-                <span className="sr-only">Play audio</span>
-              </Button>
+            <div className="flex gap-1">
+                <Button variant="ghost" size="icon" className="w-8 h-8" onClick={handleCopy}>
+                    <Copy className="w-4 h-4" />
+                    <span className="sr-only">Copy</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8" onClick={handleBookmark}>
+                    <Bookmark className="w-4 h-4" />
+                    <span className="sr-only">Bookmark</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="w-8 h-8" onClick={handlePlayAudio}>
+                    <PlayCircle className="w-4 h-4" />
+                    <span className="sr-only">Play audio</span>
+                </Button>
             </div>
-          </div>
-          <div className="flex-1 space-y-4">
-              {verse.text.en_transliteration && (
-                <div>
-                  <p className="text-lg text-foreground">{verse.text.en_transliteration}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-muted-foreground">{verse.text.en_sahih}</p>
-                <p className="text-xs text-muted-foreground/80 mt-1">- Sahih International</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">{verse.text[selectedTranslation]}</p>
-                <p className="text-xs text-muted-foreground/80 mt-1">- {getTranslationAuthor(selectedTranslation)}</p>
-              </div>
+        </div>
+        
+        <div className="space-y-4">
             <div className="text-right">
-              <p className="text-3xl md:text-4xl leading-relaxed font-headline text-primary" dir="rtl">
+                <p className="text-3xl md:text-4xl leading-relaxed font-headline text-primary" dir="rtl">
                 {verse.text.ar}
-              </p>
+                </p>
             </div>
-          </div>
+
+            {verse.text.en_transliteration && (
+            <div>
+                <p className="text-lg text-foreground font-serif italic">{verse.text.en_transliteration}</p>
+            </div>
+            )}
+            
+            <div>
+            <p className="text-muted-foreground">{verse.text.en_sahih}</p>
+            <p className="text-xs text-muted-foreground/80 mt-1">- Sahih International</p>
+            </div>
+            
+            <div>
+            <p className="text-muted-foreground">{verse.text[selectedTranslation]}</p>
+            <p className="text-xs text-muted-foreground/80 mt-1">- {getTranslationAuthor(selectedTranslation)}</p>
+            </div>
         </div>
       </CardContent>
     </Card>

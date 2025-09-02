@@ -34,7 +34,7 @@ interface QuranClientLayoutProps {
 }
 
 export default function QuranClientLayout({ surahs }: QuranClientLayoutProps) {
-  const [currentSurah, setCurrentSurah] = useState<Surah>(surahs.find(s => s && s.name) || surahs[0]);
+  const [currentSurah, setCurrentSurah] = useState<Surah>(surahs[0]);
   const [selectedTranslation, setSelectedTranslation] = useState<TranslationKey>('bn_muhiuddin');
   
   const translationOptions: { value: TranslationKey; label: string }[] = [

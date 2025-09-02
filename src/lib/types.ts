@@ -2,6 +2,7 @@ export type TranslationKey = 'bn_muhiuddin' | 'bn_tanzil' | 'en_sahih';
 
 export type Ayah = {
   id: number;
+  surah_id: number;
   text: {
     ar: string;
     bn_muhiuddin: string;
