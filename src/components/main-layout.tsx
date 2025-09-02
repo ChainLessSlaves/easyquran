@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from 'react';
@@ -17,11 +18,12 @@ import {
   SidebarTrigger,
   SidebarFooter
 } from '@/components/ui/sidebar';
-import { BookOpen, Home, Mic, Radio, BookUser, ExternalLink, MessageSquareQuote, Tv, GitPullRequest, HelpCircle, FileText } from 'lucide-react';
+import { BookOpen, Home, Mic, Radio, BookUser, ExternalLink, MessageSquareQuote, Tv, GitPullRequest, HelpCircle, FileText, LifeBuoy } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from './ui/button';
 import { SearchTool } from './search-tool';
 import { ThemeToggle } from './theme-toggle';
+import { cn } from '@/lib/utils';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -30,13 +32,14 @@ interface MainLayoutProps {
 
 const menuItems = [
   { href: "/", icon: Home, label: "Home" },
-  { href: "#", icon: Radio, label: "Quran Radio" },
-  { href: "#", icon: Mic, label: "Reciters" },
-  { href: "#", icon: BookUser, label: "About Us" },
-  { href: "#", icon: Tv, label: "Developers" },
-  { href: "#", icon: GitPullRequest, label: "Product Updates" },
-  { href: "#", icon: MessageSquareQuote, label: "Feedback" },
-  { href: "#", icon: HelpCircle, label: "Help" },
+  { href: "/radio", icon: Radio, label: "Quran Radio", className: "animate-pulse" },
+  { href: "/reciters", icon: Mic, label: "Reciters" },
+  { href: "/about", icon: BookUser, label: "About Us" },
+  { href: "/developers", icon: Tv, label: "Developers" },
+  { href: "/updates", icon: GitPullRequest, label: "Product Updates" },
+  { href: "/feedback", icon: MessageSquareQuote, label: "Feedback" },
+  { href: "/help", icon: HelpCircle, label: "Help" },
+  { href: "/faq", icon: FileText, label: "FAQ" },
 ];
 
 const projectItems = [
@@ -74,7 +77,7 @@ export function MainLayout({ children, sidebarContent }: MainLayoutProps) {
                    <SidebarMenuItem key={item.label}>
                     <SidebarMenuButton asChild>
                        <Link href={item.href}>
-                        <item.icon className="w-4 h-4" />
+                        <item.icon className={cn("w-4 h-4", item.className)} />
                         <span>{item.label}</span>
                        </Link>
                     </SidebarMenuButton>
