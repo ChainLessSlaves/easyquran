@@ -71,8 +71,7 @@ export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProp
               </Button>
             </div>
           </div>
-          <div className="flex-1 flex justify-between gap-4">
-            <div className="flex-1 space-y-4 pt-1">
+          <div className="flex-1 space-y-4">
               {verse.text.en_transliteration && (
                 <div>
                   <p className="text-lg text-foreground">{verse.text.en_transliteration}</p>
@@ -86,7 +85,6 @@ export function VerseCard({ surahId, verse, selectedTranslation }: VerseCardProp
                 <p className="text-muted-foreground">{verse.text[selectedTranslation]}</p>
                 <p className="text-xs text-muted-foreground/80 mt-1">- {getTranslationAuthor(selectedTranslation)}</p>
               </div>
-            </div>
             <div className="text-right">
               <p className="text-3xl md:text-4xl leading-relaxed font-headline text-primary" dir="rtl">
                 {verse.text.ar}
