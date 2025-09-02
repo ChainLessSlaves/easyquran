@@ -1,21 +1,8 @@
 "use client";
 
-import React, { useState, useMemo, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import type { Surah, SurahMetadata } from '@/lib/types';
 import { getSurah } from '@/app/actions';
-import {
-  SidebarProvider,
-  Sidebar,
-  SidebarHeader,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarInset,
-  SidebarTrigger
-} from '@/components/ui/sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -24,13 +11,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel
 } from "@/components/ui/select";
-import { BookOpen, Languages, Menu, Loader2, ChevronDown } from 'lucide-react';
+import { BookOpen, Languages, Loader2, ChevronDown } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { VerseCard } from '@/components/verse-card';
-import { SearchTool } from '@/components/search-tool';
 import { Button } from './ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { MainLayout } from './main-layout';
 
 interface QuranClientLayoutProps {
   surahMetadatas: SurahMetadata[];
@@ -74,58 +63,54 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
       { value: 'bn_163', label: 'Sheikh Mujibur Rahman', group: 'Bengali' },
       { value: 'bn_164', label: 'Rawai Al-bayan', group: 'Bengali' },
   ];
+  
+  const groupedTranslations = translationOptions.reduce((acc, option) => {
+      if (!acc[option.group]) {
+        acc[option.group] = [];
+      }
+      acc[option.group].push(option);
+      return acc;
+    }, {} as Record<string, TranslationOption[]>);
+
 
   return (
-    <SidebarProvider>
-      <Sidebar>
-        <SidebarHeader>
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-6 h-6 text-primary" />
-            <h1 className="text-xl font-headline font-semibold">EasyQuran</h1>
-          </div>
-        </SidebarHeader>
-        <SidebarContent>
-          <ScrollArea className="flex-1">
-            <SidebarGroup>
-              <SearchTool />
-            </SidebarGroup>
-            <SidebarGroup>
-              <SidebarGroupLabel>Surahs</SidebarGroupLabel>
-              <SidebarMenu>
+    <MainLayout
+      sidebarContent={
+        <ScrollArea className="flex-1">
+            <div className="p-4">
+              <h2 className="text-lg font-semibold mb-4">Surahs</h2>
+              <div className="space-y-2">
                 {surahMetadatas.map((surah) => {
                   if (!surah || !surah.name) {
                     return null;
                   }
                   return (
-                    <SidebarMenuItem key={surah.id}>
-                      <SidebarMenuButton
-                        onClick={() => handleSurahChange(surah.id)}
-                        isActive={currentSurah.id === surah.id}
-                        className="justify-between"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="bg-primary/10 text-primary text-xs font-bold rounded-md h-6 w-6 flex items-center justify-center">
+                    <Button
+                      key={surah.id}
+                      variant={currentSurah.id === surah.id ? "secondary" : "ghost"}
+                      onClick={() => handleSurahChange(surah.id)}
+                      className="w-full justify-start h-auto py-2"
+                    >
+                      <div className="flex items-center gap-3">
+                          <span className="bg-primary/10 text-primary text-xs font-bold rounded-md h-7 w-7 flex items-center justify-center">
                             {surah.id}
                           </span>
-                          <div>
+                          <div className="text-left">
                             <p className="font-semibold">{surah.name.transliteration}</p>
                             <p className="text-xs text-muted-foreground">{surah.name.en}</p>
                           </div>
                         </div>
-                        <p className="text-lg font-headline text-primary">{surah.name_arabic.split(' ').pop()}</p>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                        <p className="text-lg font-headline text-primary ml-auto">{surah.name_arabic.split(' ').pop()}</p>
+                    </Button>
                   )
                 })}
-              </SidebarMenu>
-            </SidebarGroup>
-          </ScrollArea>
-        </SidebarContent>
-      </Sidebar>
-      <SidebarInset>
+              </div>
+            </div>
+        </ScrollArea>
+      }
+    >
         <main className="flex-1 flex flex-col">
           <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b p-2 flex items-center justify-between gap-4">
-              <SidebarTrigger className="md:hidden" />
               {currentSurah && currentSurah.name && (
                 <div className="flex-1">
                   <h2 className="text-xl font-headline font-bold">{currentSurah.name.transliteration}</h2>
@@ -141,9 +126,6 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
                         <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${isTajweedLegendOpen && 'rotate-180'}`} />
                        </Button>
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
-                       {/* The legend can be a dropdown or a popover under the button */}
-                    </CollapsibleContent>
                   </Collapsible>
                 <Select onValueChange={(value: string) => setSelectedTranslation(value)} defaultValue={selectedTranslation}>
                   <SelectTrigger className="w-auto gap-2 hidden sm:flex">
@@ -151,19 +133,13 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
                     <SelectValue placeholder="Select Translation" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.values(translationOptions.reduce((acc, option) => {
-                      if (!acc[option.group]) {
-                        acc[option.group] = [];
-                      }
-                      acc[option.group].push(option);
-                      return acc;
-                    }, {} as {[key: string]: TranslationOption[]})).map((group, index) => (
-                      <React.Fragment key={index}>
-                        <SelectValue>{group[0].group}</SelectValue>
-                        {group.map(opt => (
+                    {Object.entries(groupedTranslations).map(([group, options]) => (
+                      <SelectGroup key={group}>
+                        <SelectLabel>{group}</SelectLabel>
+                        {options.map(opt => (
                           <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                         ))}
-                      </React.Fragment>
+                      </SelectGroup>
                     ))}
                   </SelectContent>
                 </Select>
@@ -185,25 +161,19 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
                           <SelectValue placeholder="Select Translation" />
                         </SelectTrigger>
                         <SelectContent>
-                           {Object.values(translationOptions.reduce((acc, option) => {
-                            if (!acc[option.group]) {
-                              acc[option.group] = [];
-                            }
-                            acc[option.group].push(option);
-                            return acc;
-                          }, {} as {[key: string]: TranslationOption[]})).map((group, index) => (
-                            <React.Fragment key={index}>
-                              <SelectValue>{group[0].group}</SelectValue>
-                              {group.map(opt => (
+                         {Object.entries(groupedTranslations).map(([group, options]) => (
+                            <SelectGroup key={group}>
+                              <SelectLabel>{group}</SelectLabel>
+                              {options.map(opt => (
                                 <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                               ))}
-                            </React.Fragment>
+                            </SelectGroup>
                           ))}
                         </SelectContent>
                       </Select>
                 </div>
 
-                {showTajweed && (
+                {showTajweed && isTajweedLegendOpen && (
                   <Card className="mb-4">
                     <CardContent className="p-4">
                       <p className="text-sm font-bold mb-2">Tajweed Colors</p>
@@ -245,7 +215,6 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
             )}
           </div>
         </main>
-      </SidebarInset>
-    </SidebarProvider>
+    </MainLayout>
   );
 }
