@@ -7,6 +7,7 @@ export type Ayah = {
     bn_muhiuddin: string;
     bn_tanzil: string;
     en_sahih: string;
+    en_transliteration?: string;
   };
   audio: string;
 };

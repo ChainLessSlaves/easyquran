@@ -21,6 +21,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'পরম করুণাময় অসীম দয়ালু আল্লাহর নামে শুরু করছি।',
           bn_tanzil: 'শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।',
           en_sahih: 'In the name of Allah, the Entirely Merciful, the Especially Merciful.',
+          en_transliteration: "Bismillāhi r-raḥmāni r-raḥīm",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3',
       },
@@ -31,6 +32,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'যাবতীয় প্রশংসা আল্লাহ তাআলার যিনি সকল সৃষ্টি জগতের পালনকর্তা।',
           bn_tanzil: 'যাবতীয় প্রশংসা জগৎসমূহের প্রতিপালক আল্লাহরই।',
           en_sahih: '[All] praise is [due] to Allah, Lord of the worlds -',
+          en_transliteration: "Al ḥamdu lillāhi rabbi l-ʿālamīn",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001002.mp3',
       },
@@ -41,6 +43,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'যিনি নিতান্ত মেহেরবান ও দয়ালু।',
           bn_tanzil: 'যিনি পরম করুণাময়, অতি দয়ালু।',
           en_sahih: 'The Entirely Merciful, the Especially Merciful,',
+          en_transliteration: "Ar raḥmāni r-raḥīm",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001003.mp3',
       },
@@ -51,6 +54,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'যিনি বিচার দিনের মালিক।',
           bn_tanzil: 'বিচার দিনের মালিক।',
           en_sahih: 'Sovereign of the Day of Recompense.',
+          en_transliteration: "Māliki yawmi d-dīn",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001004.mp3',
       },
@@ -61,6 +65,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'আমরা একমাত্র তোমারই ইবাদত করি এবং শুধুমাত্র তোমারই সাহায্য প্রার্থনা করি।',
           bn_tanzil: 'আমরা কেবল তোমারই ‘ইবাদাত করি এবং কেবলমাত্র তোমারই সাহায্য প্রার্থনা করি।',
           en_sahih: 'It is You we worship and You we ask for help.',
+          en_transliteration: "Iyyāka naʿbudu wa iyyāka nastaʿīn",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001005.mp3',
       },
@@ -71,6 +76,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'আমাদেরকে সরল পথ দেখাও,',
           bn_tanzil: 'আমাদেরকে সরল পথের হিদায়াত দিন।',
           en_sahih: 'Guide us to the straight path -',
+          en_transliteration: "Ihdinā ṣ-ṣirāṭa l-mustaqīm",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001006.mp3',
       },
@@ -81,6 +87,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'সে সমস্ত লোকের পথ, যাদেরকে তুমি নেয়ামত দান করেছ। তাদের পথ নয়, যাদের প্রতি তোমার গজব নাযিল হয়েছে এবং যারা পথভ্রষ্ট হয়েছে।',
           bn_tanzil: 'তাদের পথ, যাদেরকে আপনি নি‘আমাত দিয়েছেন, যাদের উপর আপনার ক্রোধ আপতিত হয়নি এবং যারা পথভ্রষ্টও নয়।',
           en_sahih: 'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.',
+          en_transliteration: "Ṣirāṭa llaḏīna anʿamta ʿalayhim ġayri l-maġḍūbi ʿalayhim walā ḍ-ḍāllīn",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/001007.mp3',
       },
@@ -102,7 +109,8 @@ export const quranData: QuranData = [
                 "ar": "الٓمٓ",
                 "bn_muhiuddin": "আলিফ লাম মীম।",
                 "bn_tanzil": "আলিফ-লাম-মীম",
-                "en_sahih": "Alif, Lam, Meem."
+                "en_sahih": "Alif, Lam, Meem.",
+                "en_transliteration": "Alif-Lām-Mīm"
             },
             "audio": "https://everyayah.com/data/Alafasy_128kbps/002001.mp3"
         },
@@ -112,7 +120,8 @@ export const quranData: QuranData = [
                 "ar": "ذَٰلِكَ ٱلْكِتَـٰبُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
                 "bn_muhiuddin": "এ সেই কিতাব যাতে কোনই সন্দেহ নেই। পথ প্রদর্শনকারী পরহেযগারদের জন্য,",
                 "bn_tanzil": "এ সেই কিতাব, যাতে কোন সন্দেহ নেই, মুত্তাকীদের জন্য হিদায়াত।",
-                "en_sahih": "This is the Book about which there is no doubt, a guidance for those conscious of Allah -"
+                "en_sahih": "This is the Book about which there is no doubt, a guidance for those conscious of Allah -",
+                "en_transliteration": "Dhālika l-kitābu lā rayba fīh, hudan li-l-muttaqīn"
             },
             "audio": "https://everyayah.com/data/Alafasy_128kbps/002002.mp3"
         },
@@ -122,7 +131,8 @@ export const quranData: QuranData = [
                 "ar": "ٱلَّذِينَ يُؤْمِنُونَ بِٱلْغَيْبِ وَيُقِيمُونَ ٱلصَّلَوٰةَ وَمِمَّا رَزَقْنَـٰهُمْ يُنفِقُونَ",
                 "bn_muhiuddin": "যারা অদেখা বিষয়ের উপর বিশ্বাস স্থাপন করে এবং নামায প্রতিষ্ঠা করে। আর আমি তাদেরকে যে রুযী দান করেছি তা থেকে ব্যয় করে।",
                 "bn_tanzil": "যারা গায়েবের প্রতি ঈমান আনে, সালাত কায়েম করে এবং আমি তাদেরকে যে রিয্ক দিয়েছি তা থেকে ব্যয় করে।",
-                "en_sahih": "Who believe in the unseen, establish prayer, and spend out of what We have provided for them,"
+                "en_sahih": "Who believe in the unseen, establish prayer, and spend out of what We have provided for them,",
+                "en_transliteration": "Alladhīna yu'minūna bi-l-ghaybi wa yuqīmūna ṣ-ṣalāta wa mimmā razaqnāhum yunfiqūn"
             },
             "audio": "https://everyayah.com/data/Alafasy_128kbps/002003.mp3"
         },
@@ -132,7 +142,8 @@ export const quranData: QuranData = [
                 "ar": "وَٱلَّذِينَ يُؤْمِنُونَ بِمَآ أُنزِلَ إِلَيْكَ وَمَآ أُنزِلَ مِن قَبْلِكَ وَبِٱلْـَٔاخِرَةِ هُمْ يُوقِنُونَ",
                 "bn_muhiuddin": "এবং যারা বিশ্বাস স্থাপন করেছে সেসব বিষয়ের উপর যা কিছু তোমার প্রতি অবতীর্ণ হয়েছে এবং সেসব বিষয়ের উপর যা তোমার পূর্ববর্তীদের প্রতি অবতীর্ণ হয়েছে। আর আখেরাতকে যারা নিশ্চিত বলে বিশ্বাস করে।",
                 "bn_tanzil": "আর যারা ঈমান আনে তাতে, যা তোমার প্রতি নাযিল করা হয়েছে এবং যা তোমার পূর্বে নাযিল করা হয়েছে। আর আখিরাতের প্রতি তারা ইয়াকীন রাখে।",
-                "en_sahih": "And who believe in what has been revealed to you, [O Muhammad], and what was revealed before you, and of the Hereafter they are certain [in faith]."
+                "en_sahih": "And who believe in what has been revealed to you, [O Muhammad], and what was revealed before you, and of the Hereafter they are certain [in faith].",
+                "en_transliteration": "Wa-lladhīna yu'minūna bi-mā unzila ilayka wa mā unzila min qablika wa bi-l-'ākhirati hum yūqinūn"
             },
             "audio": "https://everyayah.com/data/Alafasy_128kbps/002004.mp3"
         },
@@ -142,7 +153,8 @@ export const quranData: QuranData = [
                 "ar": "أُو۟لَـٰٓئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُو۟لَـٰٓئِكَ هُمُ ٱلْمُفْلِحُونَ",
                 "bn_muhiuddin": "তারাই নিজেদের পালনকর্তার পক্ষ থেকে সুপথ প্রাপ্ত, আর তারাই যথার্থ সফলকাম।",
                 "bn_tanzil": "তারা তাদের রবের পক্ষ থেকে হিদায়াতের উপর রয়েছে এবং তারাই সফলকাম।",
-                "en_sahih": "Those are upon [right] guidance from their Lord, and it is those who are the successful."
+                "en_sahih": "Those are upon [right] guidance from their Lord, and it is those who are the successful.",
+                "en_transliteration": "Ulā'ika ʿalā hudan min rabbihim wa ulā'ika humu l-mufliḥūn"
             },
             "audio": "https://everyayah.com/data/Alafasy_128kbps/002005.mp3"
         }
@@ -1386,6 +1398,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'বলুন, আমি আশ্রয় গ্রহণ করছি মানুষের পালনকর্তার,',
           bn_tanzil: 'বল, ‘আমি আশ্রয় চাচ্ছি মানুষের রবের কাছে,',
           en_sahih: 'Say, "I seek refuge in the Lord of mankind,',
+          en_transliteration: "Qul aʿūḏu birabbi n-nās",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/114001.mp3',
       },
@@ -1396,6 +1409,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'মানুষের অধিপতির,',
           bn_tanzil: 'মানুষের অধিপতির কাছে,',
           en_sahih: 'The Sovereign of mankind.',
+          en_transliteration: "Maliki n-nās",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/114002.mp3',
       },
@@ -1406,6 +1420,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'মানুষের মা’বুদের,',
           bn_tanzil: 'মানুষের ইলাহের কাছে,',
           en_sahih: 'The God of mankind,',
+          en_transliteration: "Ilāhi n-nās",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/114003.mp3',
       },
@@ -1416,6 +1431,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'তার অনিষ্ট থেকে, যে কুমন্ত্রণা দেয় ও আত্নগোপন করে,',
           bn_tanzil: 'আত্মগোপনকারী কুমন্ত্রণাদাতার অনিষ্ট থেকে,',
           en_sahih: 'From the evil of the retreating whisperer -',
+          en_transliteration: "Min šarri l-waswāsi l-ḫannās",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/114004.mp3',
       },
@@ -1426,6 +1442,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'যে কুমন্ত্রণা দেয় মানুষের অন্তরে,',
           bn_tanzil: 'যে মানুষের অন্তরে কুমন্ত্রণা দেয়—',
           en_sahih: 'Who whispers [evil] into the breasts of mankind -',
+          en_transliteration: "Alladhī yuwaswisu fī ṣudūri n-nās",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/114005.mp3',
       },
@@ -1436,6 +1453,7 @@ export const quranData: QuranData = [
           bn_muhiuddin: 'জ্বিনের মধ্য থেকে অথবা মানুষের মধ্য থেকে।',
           bn_tanzil: 'জিন ও মানুষ থেকে’।',
           en_sahih: 'From among the jinn and mankind."',
+          en_transliteration: "Mina l-jinnati wa-n-nās",
         },
         audio: 'https://everyayah.com/data/Alafasy_128kbps/114006.mp3',
       },
