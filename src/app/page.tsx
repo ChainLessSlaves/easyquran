@@ -11,7 +11,7 @@ export default function Home() {
     <MainLayout>
       <div className="flex-1 space-y-8 p-4 md:p-8">
         <header className="flex flex-col items-center text-center">
-          <h1 className="text-5xl font-bold font-headline">Quran.com</h1>
+          <h1 className="text-5xl font-bold font-headline">EasyQuran</h1>
           <div className="mt-6 w-full max-w-2xl relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Search the Quran..." className="pl-12 pr-12 h-14 text-lg rounded-full bg-card border-border" />

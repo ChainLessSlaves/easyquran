@@ -20,6 +20,7 @@ import { VerseCard } from '@/components/verse-card';
 import { Button } from './ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { MainLayout } from './main-layout';
+import { SidebarGroup } from './ui/sidebar';
 
 interface QuranClientLayoutProps {
   surahMetadatas: SurahMetadata[];
@@ -72,43 +73,45 @@ export default function QuranClientLayout({ surahMetadatas, initialSurah }: Qura
       return acc;
     }, {} as Record<string, TranslationOption[]>);
 
+  const sidebar = (
+    <ScrollArea className="flex-1">
+      <SidebarGroup>
+        <div className="p-2">
+          <h2 className="text-lg font-semibold mb-2">Surahs</h2>
+          <div className="space-y-1">
+            {surahMetadatas.map((surah) => {
+              if (!surah || !surah.name) {
+                return null;
+              }
+              return (
+                <Button
+                  key={surah.id}
+                  variant={currentSurah.id === surah.id ? "secondary" : "ghost"}
+                  onClick={() => handleSurahChange(surah.id)}
+                  className="w-full justify-start h-auto py-2"
+                >
+                  <div className="flex items-center gap-3">
+                      <span className="bg-primary/10 text-primary text-xs font-bold rounded-md h-7 w-7 flex items-center justify-center">
+                        {surah.id}
+                      </span>
+                      <div className="text-left">
+                        <p className="font-semibold">{surah.name.transliteration}</p>
+                        <p className="text-xs text-muted-foreground">{surah.name.en}</p>
+                      </div>
+                    </div>
+                    <p className="text-lg font-headline text-primary ml-auto">{surah.name_arabic.split(' ').pop()}</p>
+                </Button>
+              )
+            })}
+          </div>
+        </div>
+      </SidebarGroup>
+    </ScrollArea>
+  );
+
 
   return (
-    <MainLayout
-      sidebarContent={
-        <ScrollArea className="flex-1">
-            <div className="p-4">
-              <h2 className="text-lg font-semibold mb-4">Surahs</h2>
-              <div className="space-y-2">
-                {surahMetadatas.map((surah) => {
-                  if (!surah || !surah.name) {
-                    return null;
-                  }
-                  return (
-                    <Button
-                      key={surah.id}
-                      variant={currentSurah.id === surah.id ? "secondary" : "ghost"}
-                      onClick={() => handleSurahChange(surah.id)}
-                      className="w-full justify-start h-auto py-2"
-                    >
-                      <div className="flex items-center gap-3">
-                          <span className="bg-primary/10 text-primary text-xs font-bold rounded-md h-7 w-7 flex items-center justify-center">
-                            {surah.id}
-                          </span>
-                          <div className="text-left">
-                            <p className="font-semibold">{surah.name.transliteration}</p>
-                            <p className="text-xs text-muted-foreground">{surah.name.en}</p>
-                          </div>
-                        </div>
-                        <p className="text-lg font-headline text-primary ml-auto">{surah.name_arabic.split(' ').pop()}</p>
-                    </Button>
-                  )
-                })}
-              </div>
-            </div>
-        </ScrollArea>
-      }
-    >
+    <MainLayout sidebarContent={sidebar}>
         <main className="flex-1 flex flex-col">
           <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b p-2 flex items-center justify-between gap-4">
               {currentSurah && currentSurah.name && (
